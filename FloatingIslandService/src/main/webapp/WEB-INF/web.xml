@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <listener>
+        <listener-class>com.example.utils.ContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>PostsCollectionServlet</servlet-name>
+        <servlet-class>com.example.servlet.PostsCollectionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostsCollectionServlet</servlet-name>
+        <url-pattern>/PostsCollectionServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PostsServlet</servlet-name>
+        <servlet-class>com.example.servlet.PostsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostsServlet</servlet-name>
+        <url-pattern>/PostsServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PostsLikeServlet</servlet-name>
+        <servlet-class>com.example.servlet.PostsLikeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostsLikeServlet</servlet-name>
+        <url-pattern>/PostsLikeServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UsersServlet</servlet-name>
+        <servlet-class>com.example.servlet.UsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UsersServlet</servlet-name>
+        <url-pattern>/UsersServlet</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>
+

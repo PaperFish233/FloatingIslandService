@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="FloatingIslandService:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>FloatingIslandService</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="FloatingIslandService-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="FloatingIslandService:war exploded" />
+    </root>
+  </artifact>
+</component>
