@@ -25,6 +25,7 @@ public class UsersFocusServlet extends HttpServlet {
         resp.setContentType("text/html;utf-8");
 
         int pid = Integer.parseInt(req.getParameter("pid"));
+        String uaccount = req.getParameter("uaccount");
         PrintWriter out = resp.getWriter();
         TMessage<Integer> tMessage = new TMessage();
         UsersFocusDao usersfocusDao = new UsersFocusDaoImpl();
@@ -32,15 +33,19 @@ public class UsersFocusServlet extends HttpServlet {
         String action = req.getParameter("action");
         switch (action) {
             case "Focus":
-                int i = usersfocusDao.selectData(pid);
-                usersfocusDao.insertData(pid);
-                tMessage.setCode(200);
-                tMessage.setData(i);
-                tMessage.setMessage("关注成功");
-                out.print(JSON.toJSON(tMessage));
+                int i = usersfocusDao.selectData(pid,uaccount);
+                if(i==1) {
+
+                }else{
+                    usersfocusDao.insertData(pid, uaccount);
+                    tMessage.setCode(200);
+                    tMessage.setData(i);
+                    tMessage.setMessage("关注成功");
+                    out.print(JSON.toJSON(tMessage));
+                }
                 break;
             case "SelectFocus":
-                int j = usersfocusDao.selectData(pid);
+                int j = usersfocusDao.selectData(pid,uaccount);
                 if(j==1){
                     tMessage.setCode(200);
                     tMessage.setData(j);

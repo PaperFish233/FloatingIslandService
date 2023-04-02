@@ -15,12 +15,13 @@ public class PostsLikeDaoImpl implements PostsLikeDao {
     int i = 0;
 
     @Override
-    public int insertData(int pid) {
+    public int insertData(int pid,String uaccount) {
         connection = ConnectDB.getConn();
-        String sql = "INSERT INTO postslike (laccount,lpostsid) VALUE('paperfish',?)";
+        String sql = "INSERT INTO postslike (laccount,lpostsid) VALUE(?,?)";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,pid);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setInt(2,pid);
             i = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,12 +32,13 @@ public class PostsLikeDaoImpl implements PostsLikeDao {
     }
 
     @Override
-    public int selectData(int pid) {
+    public int selectData(int pid,String uaccount) {
         connection = ConnectDB.getConn();
-        String sql="select count(*) c from postslike where laccount='paperfish' and lpostsid=?";
+        String sql="select count(*) c from postslike where laccount=? and lpostsid=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,pid);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setInt(2,pid);
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 i=resultSet.getInt("c");
@@ -50,12 +52,13 @@ public class PostsLikeDaoImpl implements PostsLikeDao {
     }
 
     @Override
-    public int deleteData(int pid) {
+    public int deleteData(int pid,String uaccount) {
         connection = ConnectDB.getConn();
-        String sql="delete from postslike where laccount='paperfish' and lpostsid=?;";
+        String sql="delete from postslike where laccount=? and lpostsid=?;";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,pid);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setInt(2,pid);
             i = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

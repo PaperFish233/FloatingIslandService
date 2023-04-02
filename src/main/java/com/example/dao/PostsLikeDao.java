@@ -2,9 +2,9 @@ package com.example.dao;
 
 public interface PostsLikeDao {
 
-    public int insertData(int pid);
+    public int insertData(int pid,String uaccount);
 
-    public int selectData(int pid);
+    public int selectData(int pid,String uaccount);
 
-    public int deleteData(int pid);
+    public int deleteData(int pid,String uaccount);
 }

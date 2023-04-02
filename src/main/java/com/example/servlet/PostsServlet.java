@@ -54,14 +54,16 @@ public class PostsServlet extends HttpServlet {
                 out.print(JSON.toJSON(tMessage));
                 break;
             case "GetMinePosts":
-                List<Posts> minedata = postsDao.getMineData();
+                String uaccount = req.getParameter("uaccount");
+                List<Posts> minedata = postsDao.getMineData(uaccount);
                 tMessage.setCode(200);
                 tMessage.setData(minedata);
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
-            case "GetCollectionPosts":
-                List<Posts> collectiondata = postsDao.getCollectionData();
+            case "GetMineCollectionPosts":
+                String uaccount1 = req.getParameter("uaccount");
+                List<Posts> collectiondata = postsDao.getMineCollectionData(uaccount1);
                 tMessage.setCode(200);
                 tMessage.setData(collectiondata);
                 tMessage.setMessage("获取成功");

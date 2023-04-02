@@ -25,6 +25,7 @@ public class PostsCollectionServlet extends HttpServlet {
         resp.setContentType("text/html;utf-8");
 
         int pid = Integer.parseInt(req.getParameter("pid"));
+        String uaccount = req.getParameter("uaccount");
         PrintWriter out = resp.getWriter();
         TMessage<Integer> tMessage = new TMessage();
         PostsCollectionDao postscollectionDao = new PostsCollectionDaoImpl();
@@ -32,15 +33,15 @@ public class PostsCollectionServlet extends HttpServlet {
         String action = req.getParameter("action");
         switch (action) {
             case "Collection":
-                int i = postscollectionDao.selectData(pid);
+                int i = postscollectionDao.selectData(pid,uaccount);
                 if(i==1){
-                    postscollectionDao.deleteData(pid);
+                    postscollectionDao.deleteData(pid,uaccount);
                     tMessage.setCode(200);
                     tMessage.setData(2);
                     tMessage.setMessage("取消收藏成功");
                     out.print(JSON.toJSON(tMessage));
                 }else{
-                    postscollectionDao.insertData(pid);
+                    postscollectionDao.insertData(pid,uaccount);
                     tMessage.setCode(200);
                     tMessage.setData(1);
                     tMessage.setMessage("收藏成功");
@@ -48,7 +49,7 @@ public class PostsCollectionServlet extends HttpServlet {
                 }
                 break;
             case "SelectCollection":
-                int j = postscollectionDao.selectData(pid);
+                int j = postscollectionDao.selectData(pid,uaccount);
                 if(j==1){
                     tMessage.setCode(200);
                     tMessage.setData(j);

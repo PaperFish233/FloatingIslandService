@@ -10,7 +10,7 @@ public interface PostsDao {
 
     public int insertData(String pconnect, String pimageurl);
 
-    public List<Posts> getMineData();
+    public List<Posts> getMineData(String uaccount);
 
-    public List<Posts> getCollectionData();
+    public List<Posts> getMineCollectionData(String uaccount);
 }
