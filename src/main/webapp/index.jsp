@@ -2,10 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <title>title</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
+<p><%= "success tomcat" %></p>
 </body>
 </html>
