@@ -34,14 +34,14 @@ public class UsersFocusServlet extends HttpServlet {
         switch (action) {
             case "Focus":
                 int i = usersfocusDao.selectData(pid,uaccount);
-                if(i==1) {
-
-                }else{
-                    usersfocusDao.insertData(pid, uaccount);
+                if(i==0) {
+                    usersfocusDao.insertData(pid,uaccount);
                     tMessage.setCode(200);
-                    tMessage.setData(i);
+                    tMessage.setData(1);
                     tMessage.setMessage("关注成功");
                     out.print(JSON.toJSON(tMessage));
+                }else{
+
                 }
                 break;
             case "SelectFocus":

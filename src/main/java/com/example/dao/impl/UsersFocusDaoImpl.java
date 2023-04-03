@@ -15,6 +15,7 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
     PreparedStatement preparedStatement = null;
     PreparedStatement preparedStatement1 = null;
     ResultSet resultSet = null;
+    ResultSet resultSet1 = null;
     int i = 0;
 
     @Override
@@ -27,9 +28,9 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
         try {
             preparedStatement1 = connection1.prepareStatement(sql1);
             preparedStatement1.setInt(1,pid);
-            resultSet = preparedStatement1.executeQuery();
-            while (resultSet.next()) {
-                str = resultSet.getString(1);
+            resultSet1 = preparedStatement1.executeQuery();
+            while (resultSet1.next()) {
+                str = resultSet1.getString(1);
             }
 
             preparedStatement = connection.prepareStatement(sql);
@@ -40,8 +41,8 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            ConnectDB.closeAll(resultSet,preparedStatement,connection);
-            ConnectDB.closeAll(null,preparedStatement1,connection1);
+            ConnectDB.closeAll(null,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
         }
         return i;
     }
@@ -56,9 +57,9 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
         try {
             preparedStatement1 = connection1.prepareStatement(sql1);
             preparedStatement1.setInt(1,pid);
-            resultSet = preparedStatement1.executeQuery();
-            while (resultSet.next()) {
-                str = resultSet.getString(1);
+            resultSet1 = preparedStatement1.executeQuery();
+            while (resultSet1.next()) {
+                str = resultSet1.getString(1);
             }
 
             preparedStatement = connection.prepareStatement(sql);
@@ -72,7 +73,7 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
             e.printStackTrace();
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
-            ConnectDB.closeAll(null,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
         }
         return i;
     }

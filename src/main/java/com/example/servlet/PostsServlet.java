@@ -47,7 +47,7 @@ public class PostsServlet extends HttpServlet {
                 int i =postsDao.insertData(pconnect,pimageurl);
                 tMessage.setCode(200);
                 if(i==1){
-                    tMessage.setMessage("成功发布");
+                    tMessage.setMessage("发布成功");
                 }else{
                     tMessage.setMessage("发布失败");
                 }

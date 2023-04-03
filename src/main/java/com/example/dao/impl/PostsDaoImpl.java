@@ -26,7 +26,6 @@ public class PostsDaoImpl implements PostsDao {
         connection1 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by pid desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
-        ResultSet resultSet1 = null;
         int i=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -126,7 +125,6 @@ public class PostsDaoImpl implements PostsDao {
         connection1 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by pid desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
-        ResultSet resultSet1 = null;
         int i=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
