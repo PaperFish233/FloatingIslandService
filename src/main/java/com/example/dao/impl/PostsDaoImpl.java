@@ -24,7 +24,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by pid desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {
@@ -85,7 +85,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by pid desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {
@@ -123,7 +123,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by pid desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by d.cid desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {

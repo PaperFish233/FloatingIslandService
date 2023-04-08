@@ -53,6 +53,15 @@
         <url-pattern>/UsersFocusServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>PostsCommentServlet</servlet-name>
+        <servlet-class>com.example.servlet.PostsCommentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PostsCommentServlet</servlet-name>
+        <url-pattern>/PostsCommentServlet</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
 
