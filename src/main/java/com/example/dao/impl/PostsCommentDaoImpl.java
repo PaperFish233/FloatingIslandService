@@ -9,23 +9,26 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PostsCommentDaoImpl implements PostsCommentDao {
 
-    static Connection connection = null;
-    static Connection connection1 = null;
-    static ResultSet resultSet = null;
-    static ResultSet resultSet1 = null;
-    static PreparedStatement preparedStatement = null;
-    static PreparedStatement preparedStatement1 = null;
+     Connection connection = null;
+     Connection connection1 = null;
+     ResultSet resultSet = null;
+     ResultSet resultSet1 = null;
+     PreparedStatement preparedStatement = null;
+     PreparedStatement preparedStatement1 = null;
+    int i = 0;
 
     @Override
     public List<PostsComment> getData(int pid) {
         List<PostsComment> list = new ArrayList<>();
         connection = ConnectDB.getConn();
-        String sql = "select b.uavatarurl,b.unickname,a.ccontent,DATE_FORMAT(a.cdate, '%Y-%m-%d %k:%i:%s') as cdate from postscomment a,users b where a.caccount=b.uaccount and a.cpostsid=?";
+        String sql = "select b.uavatarurl,b.unickname,a.ccontent,DATE_FORMAT(a.cdate, '%Y-%m-%d %k:%i:%s') as cdate from postscomment a,users b where a.caccount=b.uaccount and a.cpostsid=? ORDER BY cdate DESC";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,pid);
@@ -45,6 +48,28 @@ public class PostsCommentDaoImpl implements PostsCommentDao {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
         }
         return list;
+    }
+
+    @Override
+    public int insertData(int pid, String uaccount, String comment) {
+        connection = ConnectDB.getConn();
+        String sql = "INSERT INTO postscomment (cpostsid,caccount,ccontent,cdate) VALUE(?,?,?,?)";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,pid);
+            preparedStatement.setString(2,uaccount);
+            preparedStatement.setString(3,comment);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String datetime = formatter.format(calendar.getTime());
+            preparedStatement.setString(4,datetime);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
     }
 
 }

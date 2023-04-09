@@ -8,16 +8,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class UsersDaoImpl implements UsersDao {
 
-    static Connection connection = null;
-    static ResultSet resultSet = null;
-    static PreparedStatement preparedStatement = null;
+     Connection connection = null;
+     ResultSet resultSet = null;
+     PreparedStatement preparedStatement = null;
 
     @Override
     public List<Users> getData(String uaccount) {
@@ -38,6 +36,8 @@ public class UsersDaoImpl implements UsersDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
         }
         return list;
     }

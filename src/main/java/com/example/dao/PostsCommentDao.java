@@ -8,4 +8,6 @@ public interface PostsCommentDao {
 
     public List<PostsComment> getData(int pid);
 
+    public int insertData(int pid,String uaccount,String comment);
+
 }

@@ -12,12 +12,21 @@ import java.util.List;
 
 public class PostsDaoImpl implements PostsDao {
 
-    static Connection connection = null;
-    static Connection connection1 = null;
-    static ResultSet resultSet = null;
-    static ResultSet resultSet1 = null;
-    static PreparedStatement preparedStatement = null;
-    static PreparedStatement preparedStatement1 = null;
+    Connection connection = null;
+    Connection connection1 = null;
+    Connection connection2 = null;
+    Connection connection3 = null;
+    Connection connection4 = null;
+    ResultSet resultSet = null;
+    ResultSet resultSet1 = null;
+    ResultSet resultSet2 = null;
+    ResultSet resultSet3 = null;
+    ResultSet resultSet4 = null;
+    PreparedStatement preparedStatement = null;
+    PreparedStatement preparedStatement1 = null;
+    PreparedStatement preparedStatement2 = null;
+    PreparedStatement preparedStatement3 = null;
+    PreparedStatement preparedStatement4 = null;
 
     @Override
     public List<Posts> getData() {
@@ -52,6 +61,9 @@ public class PostsDaoImpl implements PostsDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
         }
         return list;
     }
@@ -114,6 +126,9 @@ public class PostsDaoImpl implements PostsDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
         }
         return list;
     }
@@ -152,6 +167,70 @@ public class PostsDaoImpl implements PostsDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getMineCollectionUserPostsData(String uaccount) {
+        List<Posts> list = new ArrayList<>();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
+        connection4 = ConnectDB.getConn();
+        int j=0;
+        String sql = "select uaccount from usersfocus where faccount=?";
+        String sql2 = "select count(*) c from postslike where lpostsid=?";
+        try {
+            preparedStatement2 = connection2.prepareStatement(sql);
+            preparedStatement2.setString(1,uaccount);
+            resultSet2 = preparedStatement2.executeQuery();
+
+            ArrayList<String> resultList = new ArrayList<>(); // 用于存储查询结果
+            while (resultSet2.next()) {
+                resultList.add(resultSet2.getString(1)); // 获取结果集中的每个参数并添加到结果列表中
+            }
+
+            StringBuilder sqlBuilder = new StringBuilder("select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount in (?");
+            for (int i = 1; i < resultList.size(); i++) {
+                sqlBuilder.append(",?");
+            }
+            sqlBuilder.append(") ORDER BY pdate DESC");
+            String sql1 = sqlBuilder.toString();
+
+            preparedStatement3 = connection3.prepareStatement(sql1);
+            for(int i=0;i<resultList.size();i++){
+                preparedStatement3.setString(i+1,resultList.get(i));
+            }
+            resultSet3 = preparedStatement3.executeQuery();
+            while (resultSet3.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet3.getInt(1));
+                posts.setAvatarurl(resultSet3.getString(2));
+                posts.setContent(resultSet3.getString(3));
+                posts.setImageurl(resultSet3.getString(4));
+                posts.setNickname(resultSet3.getString(5));
+                posts.setTopicname(resultSet3.getString(6));
+                posts.setDate(resultSet3.getString(7));
+
+                preparedStatement4 = connection4.prepareStatement(sql2);
+                preparedStatement4.setInt(1,posts.getPid());
+                resultSet4 = preparedStatement4.executeQuery();
+                while(resultSet4.next()){
+                    j = resultSet4.getInt(1);
+                }
+                posts.setLikenum(j);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
+            ConnectDB.closeAll(resultSet4,preparedStatement4,connection4);
         }
         return list;
     }

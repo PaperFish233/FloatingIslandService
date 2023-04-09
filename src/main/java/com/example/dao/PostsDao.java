@@ -13,4 +13,6 @@ public interface PostsDao {
     public List<Posts> getMineData(String uaccount);
 
     public List<Posts> getMineCollectionData(String uaccount);
+
+    public List<Posts> getMineCollectionUserPostsData(String uaccount);
 }

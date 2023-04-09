@@ -44,6 +44,15 @@ public class PostsCommentServlet extends HttpServlet {
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
+            case "InsertPostsComment":
+                int pid1 = Integer.parseInt(req.getParameter("pid"));
+                String account = req.getParameter("uaccount");
+                String comment = req.getParameter("comment");
+                int i = postscommentDao.insertData(pid1,account,comment);
+                tMessage.setCode(200);
+                tMessage.setMessage("发布成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
         }
     }
 }

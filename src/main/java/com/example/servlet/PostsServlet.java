@@ -69,6 +69,14 @@ public class PostsServlet extends HttpServlet {
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
+            case "GetMineCollectionUserPosts":
+                String uaccount2 = req.getParameter("uaccount");
+                List<Posts> minecollectionuserpostsdata = postsDao.getMineCollectionUserPostsData(uaccount2);
+                tMessage.setCode(200);
+                tMessage.setData(minecollectionuserpostsdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
         }
 
     }
