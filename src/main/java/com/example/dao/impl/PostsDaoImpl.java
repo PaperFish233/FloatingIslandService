@@ -234,4 +234,52 @@ public class PostsDaoImpl implements PostsDao {
         }
         return list;
     }
+
+    @Override
+    public List<Posts> getSearchPostsData(String keyword) {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+
+        String keyword1 = keyword; // 要搜索的关键字
+        String pattern = "%" + keyword1 + "%"; // 根据关键字构造模式字符串
+        String sql = "SELECT a.pid, b.uavatarurl, a.pcontent, a.pimageurl, b.unickname, c.tname, DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate " +
+                "FROM posts a, users b, topic c " +
+                "WHERE a.paccount=b.uaccount AND a.ptopicid=c.tid AND a.pcontent LIKE ? " +
+                "ORDER BY pdate DESC";
+
+        String sql1 = "select count(*) c from postslike where lpostsid=?";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,pattern);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet.getInt(1));
+                posts.setAvatarurl(resultSet.getString(2));
+                posts.setContent(resultSet.getString(3));
+                posts.setImageurl(resultSet.getString(4));
+                posts.setNickname(resultSet.getString(5));
+                posts.setTopicname(resultSet.getString(6));
+                posts.setDate(resultSet.getString(7));
+
+                preparedStatement1 = connection1.prepareStatement(sql1);
+                preparedStatement1.setInt(1,posts.getPid());
+                resultSet1 = preparedStatement1.executeQuery();
+                while(resultSet1.next()){
+                    i = resultSet1.getInt(1);
+                }
+                posts.setLikenum(i);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
 }

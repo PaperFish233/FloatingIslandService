@@ -77,6 +77,14 @@ public class PostsServlet extends HttpServlet {
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
+            case "GetSearchPosts":
+                String keyword = req.getParameter("keyword");
+                List<Posts> searchpostsdata = postsDao.getSearchPostsData(keyword);
+                tMessage.setCode(200);
+                tMessage.setData(searchpostsdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
         }
 
     }
