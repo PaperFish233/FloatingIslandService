@@ -69,7 +69,7 @@ public class PostsDaoImpl implements PostsDao {
     }
 
     @Override
-    public int insertData(String pconnect, String pimageurl) {
+    public int insertData(String uaccount, String pconnect, String pimageurl) {
         connection = ConnectDB.getConn();
         String sql = "INSERT INTO posts (pcontent,pimageurl,ptopicid,paccount,pdate) VALUE(?,?,?,?,?)";
         int i = 0;
@@ -78,7 +78,7 @@ public class PostsDaoImpl implements PostsDao {
             preparedStatement.setString(1, pconnect);
             preparedStatement.setString(2, pimageurl);
             preparedStatement.setInt(3, 1);
-            preparedStatement.setString(4, "paperfish");
+            preparedStatement.setString(4, uaccount);
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String datetime = formatter.format(calendar.getTime());
@@ -193,37 +193,41 @@ public class PostsDaoImpl implements PostsDao {
                 resultList.add(resultSet2.getString(1)); // 获取结果集中的每个参数并添加到结果列表中
             }
 
-            StringBuilder sqlBuilder = new StringBuilder("select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount in (?");
-            for (int i = 1; i < resultList.size(); i++) {
-                sqlBuilder.append(",?");
-            }
-            sqlBuilder.append(") ORDER BY pdate DESC");
-            String sql1 = sqlBuilder.toString();
-
-            preparedStatement3 = connection3.prepareStatement(sql1);
-            for(int i=0;i<resultList.size();i++){
-                preparedStatement3.setString(i+1,resultList.get(i));
-            }
-            resultSet3 = preparedStatement3.executeQuery();
-            while (resultSet3.next()) {
-                Posts posts = new Posts();
-                posts.setPid(resultSet3.getInt(1));
-                posts.setAvatarurl(resultSet3.getString(2));
-                posts.setContent(resultSet3.getString(3));
-                posts.setImageurl(resultSet3.getString(4));
-                posts.setNickname(resultSet3.getString(5));
-                posts.setTopicname(resultSet3.getString(6));
-                posts.setDate(resultSet3.getString(7));
-
-                preparedStatement4 = connection4.prepareStatement(sql2);
-                preparedStatement4.setInt(1,posts.getPid());
-                resultSet4 = preparedStatement4.executeQuery();
-                while(resultSet4.next()){
-                    j = resultSet4.getInt(1);
+            if(resultList != null && !resultList.isEmpty()){
+                // 执行查询操作
+                StringBuilder sqlBuilder = new StringBuilder("select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount in (?");
+                for (int i = 1; i < resultList.size(); i++) {
+                    sqlBuilder.append(",?");
                 }
-                posts.setLikenum(j);
+                sqlBuilder.append(") ORDER BY pdate DESC");
+                String sql1 = sqlBuilder.toString();
+                preparedStatement3 = connection3.prepareStatement(sql1);
+                for(int i=0;i<resultList.size();i++){
+                    preparedStatement3.setString(i+1,resultList.get(i));
+                }
+                resultSet3 = preparedStatement3.executeQuery();
+                while (resultSet3.next()) {
+                    Posts posts = new Posts();
+                    posts.setPid(resultSet3.getInt(1));
+                    posts.setAvatarurl(resultSet3.getString(2));
+                    posts.setContent(resultSet3.getString(3));
+                    posts.setImageurl(resultSet3.getString(4));
+                    posts.setNickname(resultSet3.getString(5));
+                    posts.setTopicname(resultSet3.getString(6));
+                    posts.setDate(resultSet3.getString(7));
 
-                list.add(posts);
+                    preparedStatement4 = connection4.prepareStatement(sql2);
+                    preparedStatement4.setInt(1,posts.getPid());
+                    resultSet4 = preparedStatement4.executeQuery();
+                    while(resultSet4.next()){
+                        j = resultSet4.getInt(1);
+                    }
+                    posts.setLikenum(j);
+
+                    list.add(posts);
+                }
+            }else{
+                // 关注列表为空，不执行查询操作
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -42,9 +42,10 @@ public class PostsServlet extends HttpServlet {
                 out.print(JSON.toJSON(tMessage));
                 break;
             case "InsertPosts":
+                String uaccount3 = req.getParameter("uaccount");
                 String pconnect = req.getParameter("pconnect");
                 String pimageurl = req.getParameter("pimageurl");
-                int i =postsDao.insertData(pconnect,pimageurl);
+                int i =postsDao.insertData(uaccount3,pconnect,pimageurl);
                 tMessage.setCode(200);
                 if(i==1){
                     tMessage.setMessage("发布成功");

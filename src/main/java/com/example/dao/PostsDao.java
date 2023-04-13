@@ -8,7 +8,7 @@ public interface PostsDao {
 
     public List<Posts> getData();
 
-    public int insertData(String pconnect, String pimageurl);
+    public int insertData(String uaccount, String pconnect, String pimageurl);
 
     public List<Posts> getMineData(String uaccount);
 

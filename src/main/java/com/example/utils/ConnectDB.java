@@ -3,6 +3,7 @@ package com.example.utils;
 import java.sql.*;
 
 public class ConnectDB {
+
     public static Connection conn = null;
     private static String DBUNAME = "root";
     private static String DBUPWD = "908520";
