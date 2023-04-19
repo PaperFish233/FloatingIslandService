@@ -10,8 +10,28 @@ public interface UsersDao {
 
     public int logininfo(String uaccount, String upassword);
 
-    public int register(String uavatarurl, String uaccount, String upassword, String unickname);
+    public int register(String uaccount, String upassword, String unickname);
 
     public int selectuser(String uaccount);
+
+    public List<Users> getUserData(int pid);
+
+    public int updateUserBackgroundurl(String inputText, String uaccount);
+
+    public int updateUserAvatarurl(String inputText, String uaccount);
+
+    public int updateUserNickname(String inputText, String uaccount);
+
+    public int updateUserSignature(String inputText, String uaccount);
+
+    public int updateUserPassword(String inputText, String uaccount);
+
+    public List<Users> getFocusUserData(String uaccount);
+
+    public List<Users> getUserFocusData(String uaccount);
+
+    public List<Users> getUserByuaccountData(String uaccount);
+
+    public List<Users> getSearchUserData(String uaccount);
 
 }

@@ -62,6 +62,24 @@
         <url-pattern>/PostsCommentServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>TopicServlet</servlet-name>
+        <servlet-class>com.example.servlet.TopicServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TopicServlet</servlet-name>
+        <url-pattern>/TopicServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>NoticeServlet</servlet-name>
+        <servlet-class>com.example.servlet.NoticeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>NoticeServlet</servlet-name>
+        <url-pattern>/NoticeServlet</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
 

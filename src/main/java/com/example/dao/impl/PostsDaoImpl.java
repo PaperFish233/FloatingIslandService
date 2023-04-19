@@ -33,7 +33,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by a.pdate desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {
@@ -46,8 +46,10 @@ public class PostsDaoImpl implements PostsDao {
                 posts.setContent(resultSet.getString(3));
                 posts.setImageurl(resultSet.getString(4));
                 posts.setNickname(resultSet.getString(5));
-                posts.setTopicname(resultSet.getString(6));
-                posts.setDate(resultSet.getString(7));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
 
                 preparedStatement1 = connection1.prepareStatement(sql1);
                 preparedStatement1.setInt(1,posts.getPid());
@@ -69,7 +71,7 @@ public class PostsDaoImpl implements PostsDao {
     }
 
     @Override
-    public int insertData(String uaccount, String pconnect, String pimageurl) {
+    public int insertData(int tid, String uaccount, String pconnect, String pimageurl) {
         connection = ConnectDB.getConn();
         String sql = "INSERT INTO posts (pcontent,pimageurl,ptopicid,paccount,pdate) VALUE(?,?,?,?,?)";
         int i = 0;
@@ -77,7 +79,7 @@ public class PostsDaoImpl implements PostsDao {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, pconnect);
             preparedStatement.setString(2, pimageurl);
-            preparedStatement.setInt(3, 1);
+            preparedStatement.setInt(3, tid);
             preparedStatement.setString(4, uaccount);
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -97,7 +99,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {
@@ -111,8 +113,10 @@ public class PostsDaoImpl implements PostsDao {
                 posts.setContent(resultSet.getString(3));
                 posts.setImageurl(resultSet.getString(4));
                 posts.setNickname(resultSet.getString(5));
-                posts.setTopicname(resultSet.getString(6));
-                posts.setDate(resultSet.getString(7));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
 
                 preparedStatement1 = connection1.prepareStatement(sql1);
                 preparedStatement1.setInt(1,posts.getPid());
@@ -138,7 +142,7 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by d.cid desc";
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by d.cid desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         int i=0;
         try {
@@ -152,8 +156,10 @@ public class PostsDaoImpl implements PostsDao {
                 posts.setContent(resultSet.getString(3));
                 posts.setImageurl(resultSet.getString(4));
                 posts.setNickname(resultSet.getString(5));
-                posts.setTopicname(resultSet.getString(6));
-                posts.setDate(resultSet.getString(7));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
 
                 preparedStatement1 = connection1.prepareStatement(sql1);
                 preparedStatement1.setInt(1,posts.getPid());
@@ -195,7 +201,7 @@ public class PostsDaoImpl implements PostsDao {
 
             if(resultList != null && !resultList.isEmpty()){
                 // 执行查询操作
-                StringBuilder sqlBuilder = new StringBuilder("select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tname,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount in (?");
+                StringBuilder sqlBuilder = new StringBuilder("select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount in (?");
                 for (int i = 1; i < resultList.size(); i++) {
                     sqlBuilder.append(",?");
                 }
@@ -213,8 +219,10 @@ public class PostsDaoImpl implements PostsDao {
                     posts.setContent(resultSet3.getString(3));
                     posts.setImageurl(resultSet3.getString(4));
                     posts.setNickname(resultSet3.getString(5));
-                    posts.setTopicname(resultSet3.getString(6));
-                    posts.setDate(resultSet3.getString(7));
+                    posts.setTopicid(resultSet3.getInt(6));
+                    posts.setTopicname(resultSet3.getString(7));
+                    posts.setTopicimageurl(resultSet3.getString(8));
+                    posts.setDate(resultSet3.getString(9));
 
                     preparedStatement4 = connection4.prepareStatement(sql2);
                     preparedStatement4.setInt(1,posts.getPid());
@@ -247,7 +255,7 @@ public class PostsDaoImpl implements PostsDao {
 
         String keyword1 = keyword; // 要搜索的关键字
         String pattern = "%" + keyword1 + "%"; // 根据关键字构造模式字符串
-        String sql = "SELECT a.pid, b.uavatarurl, a.pcontent, a.pimageurl, b.unickname, c.tname, DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate " +
+        String sql = "SELECT a.pid, b.uavatarurl, a.pcontent, a.pimageurl, b.unickname, c.tid,c.tname,c.timageurl, DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate " +
                 "FROM posts a, users b, topic c " +
                 "WHERE a.paccount=b.uaccount AND a.ptopicid=c.tid AND a.pcontent LIKE ? " +
                 "ORDER BY pdate DESC";
@@ -265,8 +273,10 @@ public class PostsDaoImpl implements PostsDao {
                 posts.setContent(resultSet.getString(3));
                 posts.setImageurl(resultSet.getString(4));
                 posts.setNickname(resultSet.getString(5));
-                posts.setTopicname(resultSet.getString(6));
-                posts.setDate(resultSet.getString(7));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
 
                 preparedStatement1 = connection1.prepareStatement(sql1);
                 preparedStatement1.setInt(1,posts.getPid());
@@ -283,6 +293,257 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getUserPostsData(int pid) {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
+        String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select paccount from posts where pid=?";
+        String uaccount = "";
+        int i=0;
+        try {
+            preparedStatement2 = connection2.prepareStatement(sql2);
+            preparedStatement2.setInt(1,pid);
+            resultSet2 = preparedStatement2.executeQuery();
+            while(resultSet2.next()){
+                uaccount = resultSet2.getString(1);
+            }
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet.getInt(1));
+                posts.setAvatarurl(resultSet.getString(2));
+                posts.setContent(resultSet.getString(3));
+                posts.setImageurl(resultSet.getString(4));
+                posts.setNickname(resultSet.getString(5));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
+
+                preparedStatement1 = connection1.prepareStatement(sql1);
+                preparedStatement1.setInt(1,pid);
+                resultSet1 = preparedStatement1.executeQuery();
+                while(resultSet1.next()){
+                    i = resultSet1.getInt(1);
+                }
+                posts.setLikenum(i);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+        }
+        return list;
+    }
+
+    @Override
+    public int updateData(int pid, String uaccount, String pconnect, String pimageurl) {
+        connection = ConnectDB.getConn();
+        String sql = "update posts set pcontent=?,pimageurl=?,ptopicid=?,paccount=? where pid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, pconnect);
+            preparedStatement.setString(2, pimageurl);
+            preparedStatement.setInt(3, 1);
+            preparedStatement.setString(4, uaccount);
+            preparedStatement.setInt(5, pid);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteData(int pid, String uaccount) {
+        connection = ConnectDB.getConn();
+        String sql = "delete from posts where pid=? and paccount=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, pid);
+            preparedStatement.setString(2, uaccount);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public List<Posts> getTidPostsData(int tid) {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and c.tid=? order by a.pdate desc";
+        String sql1 = "select count(*) c from postslike where lpostsid=?";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,tid);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet.getInt(1));
+                posts.setAvatarurl(resultSet.getString(2));
+                posts.setContent(resultSet.getString(3));
+                posts.setImageurl(resultSet.getString(4));
+                posts.setNickname(resultSet.getString(5));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
+
+                preparedStatement1 = connection1.prepareStatement(sql1);
+                preparedStatement1.setInt(1,posts.getPid());
+                resultSet1 = preparedStatement1.executeQuery();
+                while(resultSet1.next()){
+                    i = resultSet1.getInt(1);
+                }
+                posts.setLikenum(i);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getRankingData() {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        String sql = "SELECT a.pcontent, (SELECT COUNT(*) FROM postslike WHERE lpostsid = a.pid) AS likes FROM posts a ORDER BY likes DESC LIMIT 10";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setContent(resultSet.getString(1));
+                posts.setLikenum(resultSet.getInt(2));
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getUserPostsByuaccountData(String uaccount) {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
+        String sql1 = "select count(*) c from postslike where lpostsid=?";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet.getInt(1));
+                posts.setAvatarurl(resultSet.getString(2));
+                posts.setContent(resultSet.getString(3));
+                posts.setImageurl(resultSet.getString(4));
+                posts.setNickname(resultSet.getString(5));
+                posts.setTopicid(resultSet.getInt(6));
+                posts.setTopicname(resultSet.getString(7));
+                posts.setTopicimageurl(resultSet.getString(8));
+                posts.setDate(resultSet.getString(9));
+
+                preparedStatement1 = connection1.prepareStatement(sql1);
+                preparedStatement1.setInt(1,posts.getPid());
+                resultSet1 = preparedStatement1.executeQuery();
+                while(resultSet1.next()){
+                    i = resultSet1.getInt(1);
+                }
+                posts.setLikenum(i);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getRankingCollectionData() {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        String sql = "SELECT a.pcontent, (SELECT COUNT(*) FROM postscollection WHERE cpostsid = a.pid) AS collection FROM posts a ORDER BY collection DESC LIMIT 10";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setContent(resultSet.getString(1));
+                posts.setLikenum(resultSet.getInt(2));
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Posts> getRankingCommentData() {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        String sql = "SELECT a.pcontent, (SELECT COUNT(*) FROM postscomment WHERE cpostsid = a.pid) AS comment FROM posts a ORDER BY comment DESC LIMIT 10";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setContent(resultSet.getString(1));
+                posts.setLikenum(resultSet.getInt(2));
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
         }
         return list;
     }

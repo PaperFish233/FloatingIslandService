@@ -42,10 +42,11 @@ public class PostsServlet extends HttpServlet {
                 out.print(JSON.toJSON(tMessage));
                 break;
             case "InsertPosts":
+                int tid = Integer.parseInt(req.getParameter("tid"));
                 String uaccount3 = req.getParameter("uaccount");
                 String pconnect = req.getParameter("pconnect");
                 String pimageurl = req.getParameter("pimageurl");
-                int i =postsDao.insertData(uaccount3,pconnect,pimageurl);
+                int i =postsDao.insertData(tid,uaccount3,pconnect,pimageurl);
                 tMessage.setCode(200);
                 if(i==1){
                     tMessage.setMessage("发布成功");
@@ -83,6 +84,77 @@ public class PostsServlet extends HttpServlet {
                 List<Posts> searchpostsdata = postsDao.getSearchPostsData(keyword);
                 tMessage.setCode(200);
                 tMessage.setData(searchpostsdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetUserPosts":
+                int pid = Integer.parseInt(req.getParameter("pid"));
+                List<Posts> userdata = postsDao.getUserPostsData(pid);
+                tMessage.setCode(200);
+                tMessage.setData(userdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdatePosts":
+                int pid4 = Integer.parseInt(req.getParameter("pid"));
+                String uaccount4 = req.getParameter("uaccount");
+                String pconnect4 = req.getParameter("pconnect");
+                String pimageurl4 = req.getParameter("pimageurl");
+                int i4 = postsDao.updateData(pid4,uaccount4,pconnect4,pimageurl4);
+                tMessage.setCode(200);
+                if(i4==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "DeletePosts":
+                int pid5 = Integer.parseInt(req.getParameter("pid"));
+                String uaccount5 = req.getParameter("uaccount");
+                int i5 =postsDao.deleteData(pid5,uaccount5);
+                tMessage.setCode(200);
+                if(i5==1){
+                    tMessage.setMessage("删除成功");
+                }else{
+                    tMessage.setMessage("删除失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetTidPosts":
+                int tid1 = Integer.parseInt(req.getParameter("tid"));
+                List<Posts> Tiddata = postsDao.getTidPostsData(tid1);
+                tMessage.setCode(200);
+                tMessage.setData(Tiddata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetRankingPosts":
+                List<Posts> Rankingdata = postsDao.getRankingData();
+                tMessage.setCode(200);
+                tMessage.setData(Rankingdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetUserPostsByuaccount":
+                String uaccount6 = req.getParameter("uaccount");
+                List<Posts> userbyuaccountdata = postsDao.getUserPostsByuaccountData(uaccount6);
+                tMessage.setCode(200);
+                tMessage.setData(userbyuaccountdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetRankingCollectionPosts":
+                List<Posts> RankingCollectiondata = postsDao.getRankingCollectionData();
+                tMessage.setCode(200);
+                tMessage.setData(RankingCollectiondata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetRankingCommentPosts":
+                List<Posts> RankingCommentdata = postsDao.getRankingCommentData();
+                tMessage.setCode(200);
+                tMessage.setData(RankingCommentdata);
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;

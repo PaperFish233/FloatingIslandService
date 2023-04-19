@@ -8,7 +8,7 @@ public interface PostsDao {
 
     public List<Posts> getData();
 
-    public int insertData(String uaccount, String pconnect, String pimageurl);
+    public int insertData(int tid, String uaccount, String pconnect, String pimageurl);
 
     public List<Posts> getMineData(String uaccount);
 
@@ -17,4 +17,20 @@ public interface PostsDao {
     public List<Posts> getMineCollectionUserPostsData(String uaccount);
 
     public List<Posts> getSearchPostsData(String keyword);
+
+    public List<Posts> getUserPostsData(int pid);
+
+    public int updateData(int pid, String uaccount, String pconnect, String pimageurl);
+
+    public int deleteData(int pid, String uaccount);
+
+    public List<Posts> getTidPostsData(int tid);
+
+    public List<Posts> getRankingData();
+
+    public List<Posts> getUserPostsByuaccountData(String uaccount);
+
+    public List<Posts> getRankingCollectionData();
+
+    public List<Posts> getRankingCommentData();
 }

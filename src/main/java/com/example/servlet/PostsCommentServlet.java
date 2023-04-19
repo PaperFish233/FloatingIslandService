@@ -3,7 +3,6 @@ package com.example.servlet;
 import com.alibaba.fastjson.JSON;
 import com.example.dao.PostsCommentDao;
 import com.example.dao.impl.PostsCommentDaoImpl;
-import com.example.entity.Posts;
 import com.example.entity.PostsComment;
 import com.example.utils.TMessage;
 
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "PostsCommentServlet", value = "/PostsCommentServlet")
@@ -51,6 +49,29 @@ public class PostsCommentServlet extends HttpServlet {
                 int i = postscommentDao.insertData(pid1,account,comment);
                 tMessage.setCode(200);
                 tMessage.setMessage("发布成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "SelectComment":
+                int pid2 = Integer.parseInt(req.getParameter("pid"));
+                String faccount2 = req.getParameter("faccount");
+                String uaccount2 = req.getParameter("uaccount");
+                int j = postscommentDao.selectData(pid2,faccount2,uaccount2);
+                if(j==1){
+                    tMessage.setCode(200);
+                    tMessage.setMessage("该账号发布");
+                    out.print(JSON.toJSON(tMessage));
+                }else{
+                    tMessage.setCode(200);
+                    tMessage.setMessage("非该账号发布");
+                    out.print(JSON.toJSON(tMessage));
+                }
+                break;
+            case "DeleteComment":
+                int cid = Integer.parseInt(req.getParameter("cid"));
+                String uaccount3 = req.getParameter("uaccount");
+                int i3 = postscommentDao.deleteData(cid,uaccount3);
+                tMessage.setCode(200);
+                tMessage.setMessage("删除成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
         }

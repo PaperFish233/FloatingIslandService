@@ -77,4 +77,88 @@ public class UsersFocusDaoImpl implements UsersFocusDao {
         }
         return i;
     }
+
+    @Override
+    public int deleteData(int pid, String uaccount) {
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        String sql="delete from usersfocus where faccount=? and uaccount=?";
+        String sql1 = "select paccount from posts where pid=?";
+        String str="";
+        try {
+            preparedStatement1 = connection1.prepareStatement(sql1);
+            preparedStatement1.setInt(1,pid);
+            resultSet1 = preparedStatement1.executeQuery();
+            while (resultSet1.next()) {
+                str = resultSet1.getString(1);
+            }
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setString(2,str);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return i;
+    }
+
+    @Override
+    public int insertByuaccountData(String faccount, String uaccount) {
+        connection = ConnectDB.getConn();
+        String sql = "INSERT INTO usersfocus (faccount,uaccount) VALUE(?,?)";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setString(2,faccount);
+            i = preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int selectByuaccountData(String faccount,String uaccount) {
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        String sql="select count(*) c from usersfocus where faccount=? and uaccount=?";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setString(2,faccount);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                i = resultSet.getInt("c");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteByuaccountData(String faccount, String uaccount) {
+        connection = ConnectDB.getConn();
+        String sql="delete from usersfocus where faccount=? and uaccount=?";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setString(2,faccount);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
 }

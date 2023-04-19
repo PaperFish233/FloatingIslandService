@@ -52,7 +52,6 @@ public class UsersServlet extends HttpServlet {
                 out.print(JSON.toJSON(tMessage));
                 break;
             case "Register":
-                String uavatarurl2 = req.getParameter("uavatarurl");
                 String uaccount2 = req.getParameter("uaccount");
                 String upassword2 = req.getParameter("upassword");
                 String unickname2 = req.getParameter("unickname");
@@ -63,7 +62,7 @@ public class UsersServlet extends HttpServlet {
                     out.print(JSON.toJSON(tMessage));
                     break;
                 }else{
-                    int i3 = usersDao.register(uavatarurl2,uaccount2,upassword2,unickname2);
+                    int i3 = usersDao.register(uaccount2,upassword2,unickname2);
                     if(i3==1){
                         tMessage.setMessage("注册成功");
                     }else{
@@ -71,6 +70,106 @@ public class UsersServlet extends HttpServlet {
                     }
                     out.print(JSON.toJSON(tMessage));
                 }
+                break;
+            case "GetUserInfo":
+                int pid = Integer.parseInt(req.getParameter("pid"));
+                List<Users> userinfodata = usersDao.getUserData(pid);
+                tMessage.setCode(200);
+                tMessage.setData(userinfodata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUserBackgroundurl":
+                String inputText4 = req.getParameter("inputText");
+                String uaccount4 = req.getParameter("uaccount");
+                int i4 = usersDao.updateUserBackgroundurl(inputText4,uaccount4);
+                tMessage.setCode(200);
+                if(i4==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUserAvatarurl":
+                String inputText5 = req.getParameter("inputText");
+                String uaccount5 = req.getParameter("uaccount");
+                int i5 = usersDao.updateUserAvatarurl(inputText5,uaccount5);
+                tMessage.setCode(200);
+                if(i5==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUserNickname":
+                String inputText8 = req.getParameter("inputText");
+                String uaccount8 = req.getParameter("uaccount");
+                int i8 = usersDao.updateUserNickname(inputText8,uaccount8);
+                tMessage.setCode(200);
+                if(i8==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUserSignature":
+                String inputText9 = req.getParameter("inputText");
+                String uaccount9 = req.getParameter("uaccount");
+                int i9 = usersDao.updateUserSignature(inputText9,uaccount9);
+                tMessage.setCode(200);
+                if(i9==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUserPassword":
+                String inputText10 = req.getParameter("inputText");
+                String uaccount10 = req.getParameter("uaccount");
+                int i10 = usersDao.updateUserPassword(inputText10,uaccount10);
+                tMessage.setCode(200);
+                if(i10==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetFacusUser":
+                String uaccount11 = req.getParameter("uaccount");
+                List<Users> facususer = usersDao.getFocusUserData(uaccount11);
+                tMessage.setCode(200);
+                tMessage.setData(facususer);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetUserFacus":
+                String uaccount12 = req.getParameter("uaccount");
+                List<Users> userfacus = usersDao.getUserFocusData(uaccount12);
+                tMessage.setCode(200);
+                tMessage.setData(userfacus);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetUserInfoByuaccount":
+                String uaccount13 = req.getParameter("uaccount");
+                List<Users> userinfobyuaccountdata = usersDao.getUserByuaccountData(uaccount13);
+                tMessage.setCode(200);
+                tMessage.setData(userinfobyuaccountdata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetSearchUser":
+                String unickname = req.getParameter("unickname");
+                List<Users> searchuser = usersDao.getSearchUserData(unickname);
+                tMessage.setCode(200);
+                tMessage.setData(searchuser);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
                 break;
         }
 

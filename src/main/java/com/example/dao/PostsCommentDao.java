@@ -10,4 +10,8 @@ public interface PostsCommentDao {
 
     public int insertData(int pid,String uaccount,String comment);
 
+    public int selectData(int pid,String faccount,String uaccount);
+
+    public int deleteData(int cid,String uaccount);
+
 }

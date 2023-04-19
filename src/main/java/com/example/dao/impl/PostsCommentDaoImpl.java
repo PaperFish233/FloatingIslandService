@@ -28,17 +28,19 @@ public class PostsCommentDaoImpl implements PostsCommentDao {
     public List<PostsComment> getData(int pid) {
         List<PostsComment> list = new ArrayList<>();
         connection = ConnectDB.getConn();
-        String sql = "select b.uavatarurl,b.unickname,a.ccontent,DATE_FORMAT(a.cdate, '%Y-%m-%d %k:%i:%s') as cdate from postscomment a,users b where a.caccount=b.uaccount and a.cpostsid=? ORDER BY cdate DESC";
+        String sql = "select a.cid,b.uaccount,b.uavatarurl,b.unickname,a.ccontent,DATE_FORMAT(a.cdate, '%Y-%m-%d %k:%i:%s') as cdate from postscomment a,users b where a.caccount=b.uaccount and a.cpostsid=? ORDER BY cdate DESC";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,pid);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 PostsComment postscomment = new PostsComment();
-                postscomment.setAvatarurl(resultSet.getString(1));
-                postscomment.setNickname(resultSet.getString(2));
-                postscomment.setContent(resultSet.getString(3));
-                postscomment.setCdate(resultSet.getString(4));
+                postscomment.setCid(resultSet.getInt(1));
+                postscomment.setUaccount(resultSet.getString(2));
+                postscomment.setAvatarurl(resultSet.getString(3));
+                postscomment.setNickname(resultSet.getString(4));
+                postscomment.setContent(resultSet.getString(5));
+                postscomment.setCdate(resultSet.getString(6));
 
                 list.add(postscomment);
             }
@@ -63,6 +65,44 @@ public class PostsCommentDaoImpl implements PostsCommentDao {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String datetime = formatter.format(calendar.getTime());
             preparedStatement.setString(4,datetime);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int selectData(int pid, String faccount, String uaccount) {
+        connection = ConnectDB.getConn();
+        String sql="SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS c FROM postscomment WHERE cpostsid=? AND caccount=? AND caccount = ?;";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,pid);
+            preparedStatement.setString(2,faccount);
+            preparedStatement.setString(3,uaccount);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                i=resultSet.getInt("c");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteData(int cid, String uaccount) {
+        connection = ConnectDB.getConn();
+        String sql="delete from postscomment where caccount=? and cid=?";
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,uaccount);
+            preparedStatement.setInt(2,cid);
             i = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
