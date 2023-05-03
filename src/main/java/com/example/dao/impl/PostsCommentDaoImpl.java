@@ -112,4 +112,21 @@ public class PostsCommentDaoImpl implements PostsCommentDao {
         return i;
     }
 
+    @Override
+    public int deleteDataAdmin(int id) {
+        connection = ConnectDB.getConn();
+        String sql="delete from postscomment where cid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
+
 }

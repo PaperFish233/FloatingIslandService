@@ -158,6 +158,24 @@ public class PostsServlet extends HttpServlet {
                 tMessage.setMessage("获取成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
+            case "GetPostsAdmin":
+                List<Posts> admindata = postsDao.getDataAdmin();
+                tMessage.setCode(200);
+                tMessage.setData(admindata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "DeletePostsAdmin":
+                int deleteid = Integer.parseInt(req.getParameter("deleteid"));
+                int i6 =postsDao.deleteDataAdmin(deleteid);
+                tMessage.setCode(200);
+                if(i6==1){
+                    tMessage.setMessage("删除成功");
+                }else{
+                    tMessage.setMessage("删除失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
         }
 
     }

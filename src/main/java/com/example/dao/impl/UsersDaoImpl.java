@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class UsersDaoImpl implements UsersDao {
@@ -95,7 +97,7 @@ public class UsersDaoImpl implements UsersDao {
     @Override
     public int logininfo(String uaccount, String upassword) {
         connection = ConnectDB.getConn();
-        String sql = "select count(*) c from users where uaccount=? and upassword=?";
+        String sql = "select count(*) c from users where uaccount=? and upassword=? and ustate=1";
         int i = 0;
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -322,7 +324,7 @@ public class UsersDaoImpl implements UsersDao {
     public List<Users> getFocusUserData(String uaccount) {
         List<Users> list = new ArrayList<>();
         connection = ConnectDB.getConn();
-        String sql = "SELECT MAX( b.unickname ) AS unickname, MAX( b.uavatarurl ) AS uavatarurl, MAX( c.pid ) AS pid FROM usersfocus a JOIN users b ON a.uaccount = b.uaccount JOIN posts c ON a.uaccount = c.paccount WHERE a.faccount = ? GROUP BY a.uaccount ORDER BY MAX( a.fid ) DESC";
+        String sql = "select b.unickname,b.uavatarurl,b.uaccount from usersfocus a,users b where a.uaccount = b.uaccount and a.faccount = ? ORDER BY a.fid DESC";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,uaccount);
@@ -331,7 +333,7 @@ public class UsersDaoImpl implements UsersDao {
                 Users users = new Users();
                 users.setUnickname(resultSet.getString(1));
                 users.setUavatarurl(resultSet.getString(2));
-                users.setPid(resultSet.getInt(3));
+                users.setUaccount(resultSet.getString(3));
 
                 list.add(users);
             }
@@ -347,7 +349,7 @@ public class UsersDaoImpl implements UsersDao {
     public List<Users> getUserFocusData(String uaccount) {
         List<Users> list = new ArrayList<>();
         connection = ConnectDB.getConn();
-        String sql = "SELECT MAX(u.unickname) AS unickname, MAX(u.uavatarurl) AS uavatarurl, MAX(p.pid) AS pid FROM usersfocus f JOIN users u ON f.faccount = u.uaccount JOIN posts p ON f.faccount = p.paccount WHERE f.uaccount = ? GROUP BY u.uaccount ORDER BY MAX( f.fid ) DESC";
+        String sql = "select b.unickname,b.uavatarurl,b.uaccount from usersfocus a,users b where a.faccount = b.uaccount and a.uaccount = ? ORDER BY a.fid DESC";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,uaccount);
@@ -356,7 +358,7 @@ public class UsersDaoImpl implements UsersDao {
                 Users users = new Users();
                 users.setUnickname(resultSet.getString(1));
                 users.setUavatarurl(resultSet.getString(2));
-                users.setPid(resultSet.getInt(3));
+                users.setUaccount(resultSet.getString(3));
 
                 list.add(users);
             }
@@ -435,10 +437,15 @@ public class UsersDaoImpl implements UsersDao {
     public List<Users> getSearchUserData(String unickname) {
         List<Users> list = new ArrayList<>();
         connection = ConnectDB.getConn();
-        String sql = "SELECT uaccount, unickname, uavatarurl FROM users WHERE unickname = ?";
+
+        String keyword = unickname; // 要搜索的关键字
+        String pattern = "%" + keyword + "%"; // 根据关键字构造模式字符串
+        String sql = "SELECT uaccount, unickname, uavatarurl " +
+                "FROM users " +
+                "WHERE unickname like ? ";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,unickname);
+            preparedStatement.setString(1,pattern);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Users users = new Users();
@@ -454,5 +461,121 @@ public class UsersDaoImpl implements UsersDao {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
         }
         return list;
+    }
+
+    @Override
+    public int loginAdmin(String uaccount, String upassword) {
+        connection = ConnectDB.getConn();
+        String sql = "select count(*) c from users where uaccount=? and upassword=? and ustate=1 and upermissions=2";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, uaccount);
+            preparedStatement.setString(2, upassword);
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()){
+                i=resultSet.getInt("c");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public List<Users> getAllData() {
+        List<Users> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        String sql = "select * from users";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Users users = new Users();
+                users.setUid(resultSet.getInt(1));
+                users.setUaccount(resultSet.getString(2));
+                users.setUpassword(resultSet.getString(3));
+                users.setUnickname(resultSet.getString(4));
+                users.setUsignature(resultSet.getString(5));
+                users.setUbackgroundurl(resultSet.getString(6));
+                users.setUavatarurl(resultSet.getString(7));
+                users.setUpermissions(resultSet.getInt(8));
+                users.setUstate(resultSet.getInt(9));
+
+                list.add(users);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+        }
+        return list;
+    }
+
+    @Override
+    public int insertData(String uaccount, String upassword, String unickname, int upermissions) {
+        connection = ConnectDB.getConn();
+        String sql = "INSERT INTO users (uavatarurl,uaccount,upassword,unickname,usignature,ubackgroundurl,upermissions,ustate) VALUE('http://paperfish233.3vkj.club/src/avatar.jpg',?,?,?,'这个人很懒,什么也没有留下。','http://paperfish233.3vkj.club/src/background.jpg',?,1)";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, uaccount);
+            preparedStatement.setString(2, upassword);
+            preparedStatement.setString(3, unickname);
+            preparedStatement.setInt(4, upermissions);
+            i = preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteData(int id) {
+        connection = ConnectDB.getConn();
+        String sql="update users set ustate=2 where uid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int updateData(int id, String uaccount, String upassword, String unickname, String usignature, String ubackgroundurl, String uavatarurl, String upermissions, String ustate) {
+        connection = ConnectDB.getConn();
+        String sql = "update users set uaccount=?,upassword=?,unickname=?,usignature=?,ubackgroundurl=?,uavatarurl=?,upermissions=?,ustate=? where uid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, uaccount);
+            preparedStatement.setString(2, upassword);
+            preparedStatement.setString(3, unickname);
+            preparedStatement.setString(4, usignature);
+            preparedStatement.setString(5, ubackgroundurl);
+            preparedStatement.setString(6, uavatarurl);
+            preparedStatement.setString(7, upermissions);
+            preparedStatement.setString(8, ustate);
+            preparedStatement.setInt(9, id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
     }
 }

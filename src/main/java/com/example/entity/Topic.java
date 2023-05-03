@@ -48,4 +48,6 @@ public class Topic {
     public void setTpostsnum(int tpostsnum) {
         this.tpostsnum = tpostsnum;
     }
+
+
 }

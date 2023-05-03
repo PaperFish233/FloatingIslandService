@@ -1,5 +1,6 @@
 package com.example.dao;
 
+import com.example.entity.Notice;
 import com.example.entity.Users;
 
 import java.util.List;
@@ -33,5 +34,15 @@ public interface UsersDao {
     public List<Users> getUserByuaccountData(String uaccount);
 
     public List<Users> getSearchUserData(String uaccount);
+
+    public int loginAdmin(String uaccount, String upassword);
+
+    public List<Users> getAllData();
+
+    public int insertData(String uaccount, String upassword, String unickname, int upermissions);
+
+    public int deleteData(int id);
+
+    public int updateData(int id,String uaccount,String upassword,String unickname,String usignature,String ubackgroundurl,String uavatarurl,String upermissions,String ustate);
 
 }

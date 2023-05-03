@@ -3,6 +3,7 @@ package com.example.servlet;
 import com.alibaba.fastjson.JSON;
 import com.example.dao.UsersDao;
 import com.example.dao.impl.UsersDaoImpl;
+import com.example.entity.Notice;
 import com.example.entity.Users;
 import com.example.utils.TMessage;
 
@@ -169,6 +170,76 @@ public class UsersServlet extends HttpServlet {
                 tMessage.setCode(200);
                 tMessage.setData(searchuser);
                 tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "LoginAdmin":
+                String uaccount14 = req.getParameter("uaccount");
+                String upassword14 = req.getParameter("upassword");
+                int i11 = usersDao.loginAdmin(uaccount14,upassword14);
+                tMessage.setCode(200);
+                if(i11==1){
+                    tMessage.setMessage("登录成功");
+                }else{
+                    tMessage.setMessage("登录失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "GetAllUsers":
+                List<Users> alldata = usersDao.getAllData();
+                tMessage.setCode(200);
+                tMessage.setData(alldata);
+                tMessage.setMessage("获取成功");
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "InsertUser":
+                String uaccount15 = req.getParameter("uaccount");
+                String upassword15 = req.getParameter("upassword");
+                String unickname15 = req.getParameter("unickname");
+                int upermissions15 = Integer.parseInt(req.getParameter("upermissions"));
+                tMessage.setCode(200);
+                int i12 = usersDao.selectuser(uaccount15);
+                if(i12==1){
+                    tMessage.setMessage("账号已存在");
+                    out.print(JSON.toJSON(tMessage));
+                    break;
+                }else{
+                    int i13 = usersDao.insertData(uaccount15,upassword15,unickname15,upermissions15);
+                    if(i13==1){
+                        tMessage.setMessage("新增成功");
+                    }else{
+                        tMessage.setMessage("新增失败");
+                    }
+                    out.print(JSON.toJSON(tMessage));
+                }
+                break;
+            case "DeleteUser":
+                int deleteid = Integer.parseInt(req.getParameter("deleteid"));
+                int i14 =usersDao.deleteData(deleteid);
+                tMessage.setCode(200);
+                if(i14==1){
+                    tMessage.setMessage("更新状态成功");
+                }else{
+                    tMessage.setMessage("更新状态失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
+            case "UpdateUser":
+                int updateid = Integer.parseInt(req.getParameter("updateid"));
+                String uaccount16 = req.getParameter("uaccount1");
+                String upassword16 = req.getParameter("upassword1");
+                String unickname16 = req.getParameter("unickname1");
+                String usignature16 = req.getParameter("usignature1");
+                String ubackgroundurl16 = req.getParameter("ubackgroundurl1");
+                String uavatarurl16 = req.getParameter("uavatarurl1");
+                String upermissions16 = req.getParameter("upermissions1");
+                String ustate16 = req.getParameter("ustate1");
+                int i16 =usersDao.updateData(updateid,uaccount16,upassword16,unickname16,usignature16,ubackgroundurl16,uavatarurl16,upermissions16,ustate16);
+                tMessage.setCode(200);
+                if(i16==1){
+                    tMessage.setMessage("更新成功");
+                }else{
+                    tMessage.setMessage("更新失败");
+                }
                 out.print(JSON.toJSON(tMessage));
                 break;
         }

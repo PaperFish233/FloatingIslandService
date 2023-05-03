@@ -1,16 +1,16 @@
 package com.example.dao.impl;
 
 import com.example.dao.TopicDao;
-import com.example.entity.Posts;
 import com.example.entity.Topic;
-import com.example.entity.Users;
 import com.example.utils.ConnectDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class TopicDaoImpl implements TopicDao {
@@ -81,6 +81,87 @@ public class TopicDaoImpl implements TopicDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+        }
+        return list;
+    }
+
+    @Override
+    public int insertData(String tname, String timageurl, String tsignature) {
+        connection = ConnectDB.getConn();
+        String sql = "INSERT INTO topic (tname,timageurl,tsignature) VALUE(?,?,?)";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, tname);
+            preparedStatement.setString(2, timageurl);
+            preparedStatement.setString(3, tsignature);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int deleteData(int id) {
+        connection = ConnectDB.getConn();
+        String sql="delete from topic where tid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
+
+    @Override
+    public int updateData(int id, String tname, String timageurl, String tsignature) {
+        connection = ConnectDB.getConn();
+        String sql = "update topic set tname=?,timageurl=?,tsignature=? where tid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, tname);
+            preparedStatement.setString(2, timageurl);
+            preparedStatement.setString(3, tsignature);
+            preparedStatement.setInt(4, id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null, preparedStatement, connection);
+        }
+        return i;
+    }
+
+    @Override
+    public List<Topic> getNumData() {
+        List<Topic> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        String sql = "SELECT t.tid, t.tname, COUNT(p.ptopicid) AS post_count FROM topic t INNER JOIN posts p ON t.tid = p.ptopicid GROUP BY t.tid, t.tname";
+        int i=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Topic topic = new Topic();
+                topic.setTid(resultSet.getInt(1));
+                topic.setTname(resultSet.getString(2));
+                topic.setTpostsnum(resultSet.getInt(3));
+
+                list.add(topic);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
         }
         return list;
     }

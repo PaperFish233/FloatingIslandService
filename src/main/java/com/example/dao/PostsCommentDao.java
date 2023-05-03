@@ -14,4 +14,6 @@ public interface PostsCommentDao {
 
     public int deleteData(int cid,String uaccount);
 
+    public int deleteDataAdmin(int id);
+
 }

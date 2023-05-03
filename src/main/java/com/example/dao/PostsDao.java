@@ -33,4 +33,8 @@ public interface PostsDao {
     public List<Posts> getRankingCollectionData();
 
     public List<Posts> getRankingCommentData();
+
+    public List<Posts> getDataAdmin();
+
+    public int deleteDataAdmin(int id);
 }

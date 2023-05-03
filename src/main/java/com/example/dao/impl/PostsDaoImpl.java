@@ -547,4 +547,88 @@ public class PostsDaoImpl implements PostsDao {
         }
         return list;
     }
+
+    @Override
+    public List<Posts> getDataAdmin() {
+        List<Posts> list = new ArrayList<>();
+        connection = ConnectDB.getConn();
+        connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
+        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.uaccount,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by a.pdate desc";
+        String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
+        int i=0;
+        int j=0;
+        int k=0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Posts posts = new Posts();
+                posts.setPid(resultSet.getInt(1));
+                posts.setAvatarurl(resultSet.getString(2));
+                posts.setContent(resultSet.getString(3));
+                posts.setImageurl(resultSet.getString(4));
+                posts.setUaccount(resultSet.getString(5));
+                posts.setNickname(resultSet.getString(6));
+                posts.setTopicid(resultSet.getInt(7));
+                posts.setTopicname(resultSet.getString(8));
+                posts.setTopicimageurl(resultSet.getString(9));
+                posts.setDate(resultSet.getString(10));
+
+                preparedStatement1 = connection1.prepareStatement(sql1);
+                preparedStatement1.setInt(1,posts.getPid());
+                resultSet1 = preparedStatement1.executeQuery();
+                while(resultSet1.next()){
+                    i = resultSet1.getInt(1);
+                }
+                posts.setLikenum(i);
+
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
+                list.add(posts);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(resultSet,preparedStatement,connection);
+            ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
+        }
+        return list;
+    }
+
+    @Override
+    public int deleteDataAdmin(int id) {
+        connection = ConnectDB.getConn();
+        String sql="delete from posts where pid=?";
+        int i = 0;
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            i = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectDB.closeAll(null,preparedStatement,connection);
+        }
+        return i;
+    }
 }

@@ -74,6 +74,17 @@ public class PostsCommentServlet extends HttpServlet {
                 tMessage.setMessage("删除成功");
                 out.print(JSON.toJSON(tMessage));
                 break;
+            case "DeletePostsCommentAdmin":
+                int deleteid = Integer.parseInt(req.getParameter("deleteid"));
+                int i4 =postscommentDao.deleteDataAdmin(deleteid);
+                tMessage.setCode(200);
+                if(i4==1){
+                    tMessage.setMessage("删除成功");
+                }else{
+                    tMessage.setMessage("删除失败");
+                }
+                out.print(JSON.toJSON(tMessage));
+                break;
         }
     }
 }
