@@ -17,25 +17,37 @@ public class PostsDaoImpl implements PostsDao {
     Connection connection2 = null;
     Connection connection3 = null;
     Connection connection4 = null;
+    Connection connection5 = null;
+    Connection connection6 = null;
     ResultSet resultSet = null;
     ResultSet resultSet1 = null;
     ResultSet resultSet2 = null;
     ResultSet resultSet3 = null;
     ResultSet resultSet4 = null;
+    ResultSet resultSet5 = null;
+    ResultSet resultSet6 = null;
     PreparedStatement preparedStatement = null;
     PreparedStatement preparedStatement1 = null;
     PreparedStatement preparedStatement2 = null;
     PreparedStatement preparedStatement3 = null;
     PreparedStatement preparedStatement4 = null;
+    PreparedStatement preparedStatement5 = null;
+    PreparedStatement preparedStatement6 = null;
 
     @Override
     public List<Posts> getData() {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-        String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid order by a.pdate desc";
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
+        String sql = "SELECT a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') AS pdate FROM posts a,users b,topic c WHERE a.paccount=b.uaccount AND a.ptopicid=c.tid ORDER BY RAND()";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
@@ -59,6 +71,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -66,6 +94,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }
@@ -99,9 +129,15 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,uaccount);
@@ -126,6 +162,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -133,6 +185,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }
@@ -142,9 +196,15 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c,postscollection d where a.paccount=b.uaccount and a.ptopicid=c.tid and d.cpostsid=a.pid and d.caccount=? order by d.cid desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,uaccount);
@@ -169,6 +229,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -176,6 +252,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }
@@ -186,9 +264,15 @@ public class PostsDaoImpl implements PostsDao {
         connection2 = ConnectDB.getConn();
         connection3 = ConnectDB.getConn();
         connection4 = ConnectDB.getConn();
+        connection5 = ConnectDB.getConn();
+        connection6 = ConnectDB.getConn();
         int j=0;
+        int k=0;
+        int l=0;
         String sql = "select uaccount from usersfocus where faccount=?";
         String sql2 = "select count(*) c from postslike where lpostsid=?";
+        String sql5 = "select count(*) c from postscollection where cpostsid=?";
+        String sql6 = "select count(*) c from postscomment where cpostsid=?";
         try {
             preparedStatement2 = connection2.prepareStatement(sql);
             preparedStatement2.setString(1,uaccount);
@@ -232,6 +316,22 @@ public class PostsDaoImpl implements PostsDao {
                     }
                     posts.setLikenum(j);
 
+                    preparedStatement5 = connection5.prepareStatement(sql5);
+                    preparedStatement5.setInt(1,posts.getPid());
+                    resultSet5 = preparedStatement5.executeQuery();
+                    while(resultSet5.next()){
+                        k = resultSet5.getInt(1);
+                    }
+                    posts.setCollectionnum(k);
+
+                    preparedStatement6 = connection6.prepareStatement(sql6);
+                    preparedStatement6.setInt(1,posts.getPid());
+                    resultSet6 = preparedStatement6.executeQuery();
+                    while(resultSet6.next()){
+                        l = resultSet6.getInt(1);
+                    }
+                    posts.setCommentnum(l);
+
                     list.add(posts);
                 }
             }else{
@@ -243,6 +343,8 @@ public class PostsDaoImpl implements PostsDao {
             ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
             ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
             ConnectDB.closeAll(resultSet4,preparedStatement4,connection4);
+            ConnectDB.closeAll(resultSet5,preparedStatement5,connection5);
+            ConnectDB.closeAll(resultSet6,preparedStatement6,connection6);
         }
         return list;
     }
@@ -252,7 +354,8 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
-
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
         String keyword1 = keyword; // 要搜索的关键字
         String pattern = "%" + keyword1 + "%"; // 根据关键字构造模式字符串
         String sql = "SELECT a.pid, b.uavatarurl, a.pcontent, a.pimageurl, b.unickname, c.tid,c.tname,c.timageurl, DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate " +
@@ -261,7 +364,11 @@ public class PostsDaoImpl implements PostsDao {
                 "ORDER BY pdate DESC";
 
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,pattern);
@@ -286,6 +393,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -293,6 +416,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }
@@ -303,11 +428,17 @@ public class PostsDaoImpl implements PostsDao {
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
         connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
+        connection4 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
         String sql2 = "select paccount from posts where pid=?";
+        String sql3 = "select count(*) c from postscollection where cpostsid=?";
+        String sql4 = "select count(*) c from postscomment where cpostsid=?";
         String uaccount = "";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement2 = connection2.prepareStatement(sql2);
             preparedStatement2.setInt(1,pid);
@@ -339,6 +470,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    j = resultSet3.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement4 = connection4.prepareStatement(sql4);
+                preparedStatement4.setInt(1,posts.getPid());
+                resultSet4 = preparedStatement4.executeQuery();
+                while(resultSet4.next()){
+                    k = resultSet4.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -347,12 +494,14 @@ public class PostsDaoImpl implements PostsDao {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
             ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
+            ConnectDB.closeAll(resultSet4,preparedStatement4,connection4);
         }
         return list;
     }
 
     @Override
-    public int updateData(int pid, String uaccount, String pconnect, String pimageurl) {
+    public int updateData(int pid, String uaccount, String pconnect, String pimageurl, int tid) {
         connection = ConnectDB.getConn();
         String sql = "update posts set pcontent=?,pimageurl=?,ptopicid=?,paccount=? where pid=?";
         int i = 0;
@@ -360,7 +509,7 @@ public class PostsDaoImpl implements PostsDao {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, pconnect);
             preparedStatement.setString(2, pimageurl);
-            preparedStatement.setInt(3, 1);
+            preparedStatement.setInt(3, tid);
             preparedStatement.setString(4, uaccount);
             preparedStatement.setInt(5, pid);
             i = preparedStatement.executeUpdate();
@@ -395,9 +544,15 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and c.tid=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,tid);
@@ -422,6 +577,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -429,6 +600,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }
@@ -462,9 +635,15 @@ public class PostsDaoImpl implements PostsDao {
         List<Posts> list = new ArrayList<>();
         connection = ConnectDB.getConn();
         connection1 = ConnectDB.getConn();
+        connection2 = ConnectDB.getConn();
+        connection3 = ConnectDB.getConn();
         String sql = "select a.pid,b.uavatarurl,a.pcontent,a.pimageurl,b.unickname,c.tid,c.tname,c.timageurl,DATE_FORMAT(a.pdate, '%Y-%m-%d %k:%i:%s') as pdate from posts a,users b,topic c where a.paccount=b.uaccount and a.ptopicid=c.tid and a.paccount=? order by a.pdate desc";
         String sql1 = "select count(*) c from postslike where lpostsid=?";
+        String sql2 = "select count(*) c from postscollection where cpostsid=?";
+        String sql3 = "select count(*) c from postscomment where cpostsid=?";
         int i=0;
+        int j=0;
+        int k=0;
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,uaccount);
@@ -489,6 +668,22 @@ public class PostsDaoImpl implements PostsDao {
                 }
                 posts.setLikenum(i);
 
+                preparedStatement2 = connection2.prepareStatement(sql2);
+                preparedStatement2.setInt(1,posts.getPid());
+                resultSet2 = preparedStatement2.executeQuery();
+                while(resultSet2.next()){
+                    j = resultSet2.getInt(1);
+                }
+                posts.setCollectionnum(j);
+
+                preparedStatement3 = connection3.prepareStatement(sql3);
+                preparedStatement3.setInt(1,posts.getPid());
+                resultSet3 = preparedStatement3.executeQuery();
+                while(resultSet3.next()){
+                    k = resultSet3.getInt(1);
+                }
+                posts.setCommentnum(k);
+
                 list.add(posts);
             }
         } catch (SQLException e) {
@@ -496,6 +691,8 @@ public class PostsDaoImpl implements PostsDao {
         } finally {
             ConnectDB.closeAll(resultSet,preparedStatement,connection);
             ConnectDB.closeAll(resultSet1,preparedStatement1,connection1);
+            ConnectDB.closeAll(resultSet2,preparedStatement2,connection2);
+            ConnectDB.closeAll(resultSet3,preparedStatement3,connection3);
         }
         return list;
     }

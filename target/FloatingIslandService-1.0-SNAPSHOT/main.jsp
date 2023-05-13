@@ -181,12 +181,15 @@
                     let dataLabels = resultdata.data.map(item => item.tname);
                     let dataValues = resultdata.data.map(item => item.tpostsnum);
 
+                    // 颜色数组
+                    var colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966CC", "#FF9900", "#00cc66", "#993300", "#9999FF", "#669999"];
+
                     // 数据和选项配置
                     var data = {
                         labels: dataLabels,
                         datasets: [{
                             label: "话题分布",
-                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966CC"],
+                            backgroundColor: dataValues.map((item, index) => colors[index % colors.length]),
                             data: dataValues
                         }]
                     };

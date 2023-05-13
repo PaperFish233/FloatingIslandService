@@ -555,9 +555,9 @@ public class UsersDaoImpl implements UsersDao {
     }
 
     @Override
-    public int updateData(int id, String uaccount, String upassword, String unickname, String usignature, String ubackgroundurl, String uavatarurl, String upermissions, String ustate) {
+    public int updateData(int id, String uaccount, String upassword, String unickname, String usignature,  String upermissions, String ustate) {
         connection = ConnectDB.getConn();
-        String sql = "update users set uaccount=?,upassword=?,unickname=?,usignature=?,ubackgroundurl=?,uavatarurl=?,upermissions=?,ustate=? where uid=?";
+        String sql = "update users set uaccount=?,upassword=?,unickname=?,usignature=?,upermissions=?,ustate=? where uid=?";
         int i = 0;
         try {
             preparedStatement = connection.prepareStatement(sql);
@@ -565,11 +565,9 @@ public class UsersDaoImpl implements UsersDao {
             preparedStatement.setString(2, upassword);
             preparedStatement.setString(3, unickname);
             preparedStatement.setString(4, usignature);
-            preparedStatement.setString(5, ubackgroundurl);
-            preparedStatement.setString(6, uavatarurl);
-            preparedStatement.setString(7, upermissions);
-            preparedStatement.setString(8, ustate);
-            preparedStatement.setInt(9, id);
+            preparedStatement.setString(5, upermissions);
+            preparedStatement.setString(6, ustate);
+            preparedStatement.setInt(7, id);
             i = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

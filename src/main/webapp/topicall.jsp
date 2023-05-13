@@ -66,8 +66,16 @@
                 <div class="modal-body">
 
                     <div class="form-group">
+                        <label>上传图片：</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="file" accept="image/*">
+                            <label class="custom-file-label">选择文件</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="timageurl">话题图片：</label>
-                        <input type="text" class="form-control" id="timageurl" name="timageurl" placeholder="请输入图片链接" required>
+                        <input type="text" class="form-control" id="timageurl" name="timageurl" placeholder="自动获取图片链接" required>
                     </div>
 
                     <div class="form-group">
@@ -112,8 +120,16 @@
                     </div>
 
                     <div class="form-group">
+                        <label>上传图片：</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="file" accept="image/*">
+                            <label class="custom-file-label">选择文件</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="timageurl1">话题图片：</label>
-                        <input type="text" class="form-control" id="timageurl1" name="timageurl1" placeholder="请输入图片链接" required>
+                        <input type="text" class="form-control" id="timageurl1" name="timageurl1" placeholder="自动获取图片链接" required>
                     </div>
 
                     <div class="form-group">
@@ -257,6 +273,38 @@
             ],
         });
 
+        //上传文件
+        var fileInputs = document.querySelectorAll('.custom-file-input');
+
+        for (var i = 0; i < fileInputs.length; i++) {
+            var fileInput = fileInputs[i];
+
+            fileInput.addEventListener('change', function(event) {
+                var fileName = event.target.value.split('\\').pop();
+                var fileLabel = event.target.nextElementSibling;
+                fileLabel.innerHTML = fileName;
+
+                var file = event.target.files[0];
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload', 'file');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "FileUploadServlet");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var savePath = xhr.responseText;
+                        // $('#timageurl').val('http://172.16.44.101:8080' + savePath);
+                        // $('#timageurl1').val('http://172.16.44.101:8080' + savePath);
+                        $('#timageurl').val(window.location.origin + savePath);
+                        $('#timageurl1').val(window.location.origin + savePath);
+                        //window.location.origin 获取当前地址与端口
+                    }
+                };
+                xhr.send(formData);
+            });
+        }
+
         // 点击发布按钮后显示模态框
         $('#addBtn').click(function () {
             $('#addModal').modal('show');
@@ -325,6 +373,13 @@
                         });
                         // 关闭模态框并刷新页面
                         $('#toastModal').on('hidden.bs.modal', function () {
+                            // 重置所有上传标签为“选择文件”
+                            var allFileLabels = document.querySelectorAll('.custom-file-label');
+                            for (var j = 0; j < allFileLabels.length; j++) {
+                                allFileLabels[j].innerHTML = '选择文件';
+                            }
+                            $('#timageurl').val('');
+                            $('#timageurl1').val('');
                             $('#tname').val('');
                             $('#timageurl').val('');
                             $('#tsignature').val('');
@@ -373,6 +428,13 @@
                         });
                         // 关闭模态框并刷新页面
                         $('#toastModal').on('hidden.bs.modal', function () {
+                            // 重置所有上传标签为“选择文件”
+                            var allFileLabels = document.querySelectorAll('.custom-file-label');
+                            for (var j = 0; j < allFileLabels.length; j++) {
+                                allFileLabels[j].innerHTML = '选择文件';
+                            }
+                            $('#timageurl').val('');
+                            $('#timageurl1').val('');
                             $('#dataTable').DataTable().ajax.reload();
                         });
                     }else{

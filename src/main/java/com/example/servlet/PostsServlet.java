@@ -100,7 +100,8 @@ public class PostsServlet extends HttpServlet {
                 String uaccount4 = req.getParameter("uaccount");
                 String pconnect4 = req.getParameter("pconnect");
                 String pimageurl4 = req.getParameter("pimageurl");
-                int i4 = postsDao.updateData(pid4,uaccount4,pconnect4,pimageurl4);
+                int tid4 = Integer.parseInt(req.getParameter("tid"));
+                int i4 = postsDao.updateData(pid4,uaccount4,pconnect4,pimageurl4,tid4);
                 tMessage.setCode(200);
                 if(i4==1){
                     tMessage.setMessage("更新成功");

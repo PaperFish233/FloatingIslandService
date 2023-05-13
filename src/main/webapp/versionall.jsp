@@ -68,6 +68,19 @@
                 <div class="modal-body">
 
                     <div class="form-group">
+                        <label>上传应用：</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="file" accept="application/vnd.android.package-archive">
+                            <label class="custom-file-label">选择文件</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vapkurl">应用链接：</label>
+                        <input type="text" class="form-control" id="vapkurl" name="vapkurl" placeholder="自动获取应用链接" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="vnumber">版本号：</label>
                         <input type="text" class="form-control" id="vnumber" name="vnumber" maxlength="20" placeholder="请输入版本号" required>
                     </div>
@@ -80,11 +93,6 @@
                     <div class="form-group">
                         <label for="vcontent">版本简介：</label>
                         <textarea class="form-control" id="vcontent" name="vcontent" maxlength="255" placeholder="请输入版本简介" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="vapkurl">应用链接：</label>
-                        <input type="text" class="form-control" id="vapkurl" name="vapkurl" placeholder="请输入应用链接" required>
                     </div>
 
                 </div>
@@ -119,6 +127,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label>上传应用：</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="file" accept="application/vnd.android.package-archive">
+                            <label class="custom-file-label">选择文件</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vapkurl1">应用链接：</label>
+                        <input type="text" class="form-control" id="vapkurl1" name="vapkurl1" placeholder="自动获取应用链接" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="vnumber1">版本号：</label>
                         <input type="text" class="form-control" id="vnumber1" name="vnumber1" maxlength="20" placeholder="请输入版本号" required>
                     </div>
@@ -131,11 +152,6 @@
                     <div class="form-group">
                         <label for="vcontent1">版本简介：</label>
                         <textarea class="form-control" id="vcontent1" name="vcontent1" maxlength="255" placeholder="请输入版本简介" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="vapkurl1">应用链接：</label>
-                        <input type="text" class="form-control" id="vapkurl1" name="vapkurl1" placeholder="请输入应用链接" required>
                     </div>
 
                 </div>
@@ -270,6 +286,38 @@
             ],
         });
 
+        //上传文件
+        var fileInputs = document.querySelectorAll('.custom-file-input');
+
+        for (var i = 0; i < fileInputs.length; i++) {
+            var fileInput = fileInputs[i];
+
+            fileInput.addEventListener('change', function(event) {
+                var fileName = event.target.value.split('\\').pop();
+                var fileLabel = event.target.nextElementSibling;
+                fileLabel.innerHTML = fileName;
+
+                var file = event.target.files[0];
+                var formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload', 'file');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "FileUploadServlet");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var savePath = xhr.responseText;
+                        // $('#vapkurl').val('http://172.16.44.101:8080' + savePath);
+                        // $('#vapkurl1').val('http://172.16.44.101:8080' + savePath);
+                        $('#vapkurl').val(window.location.origin + savePath);
+                        $('#vapkurl1').val(window.location.origin + savePath);
+                        //window.location.origin 获取当前地址与端口
+                    }
+                };
+                xhr.send(formData);
+            });
+        }
+
         // 点击发布按钮后显示模态框
         $('#addBtn').click(function () {
             $('#addModal').modal('show');
@@ -339,10 +387,16 @@
                         });
                         // 关闭模态框并刷新页面
                         $('#toastModal').on('hidden.bs.modal', function () {
+                            // 重置所有上传标签为“选择文件”
+                            var allFileLabels = document.querySelectorAll('.custom-file-label');
+                            for (var j = 0; j < allFileLabels.length; j++) {
+                                allFileLabels[j].innerHTML = '选择文件';
+                            }
+                            $('#vapkurl').val('');
+                            $('#vapkurl1').val('');
                             $('#vnumber').val('');
                             $('#vupdatetitle').val('');
                             $('#vcontent').val('');
-                            $('#vapkurl').val('');
                             $('#dataTable').DataTable().ajax.reload();
                         });
                     }else{
@@ -388,6 +442,13 @@
                         });
                         // 关闭模态框并刷新页面
                         $('#toastModal').on('hidden.bs.modal', function () {
+                            // 重置所有上传标签为“选择文件”
+                            var allFileLabels = document.querySelectorAll('.custom-file-label');
+                            for (var j = 0; j < allFileLabels.length; j++) {
+                                allFileLabels[j].innerHTML = '选择文件';
+                            }
+                            $('#vapkurl').val('');
+                            $('#vapkurl1').val('');
                             $('#dataTable').DataTable().ajax.reload();
                         });
                     }else{

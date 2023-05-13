@@ -5,16 +5,28 @@ import java.sql.*;
 public class ConnectDB {
 
     public static Connection conn = null;
-    private static String DBUNAME = "root";
-    private static String DBUPWD = "908520";
+    private static String DBUNAME = "floatingisland";
+    private static String DBUPWD = "xEnCHmGXa3aLEDzW";
     //输入自己的mysql数据库的密码
     private static String DRIVER = "com.mysql.jdbc.Driver";
-    private static String URL = "jdbc:mysql://127.0.0.1:3306/floatingisland?"
+    private static String URL = "jdbc:mysql://8.130.29.148:3306/floatingisland?"
             + "serverTimezone=UTC"
             + "&useUnicode=true&characterEncoding=utf-8"
             + "&zeroDateTimeBehavior=convertToNull"
             + "&useSSL=false"
             + "&allowPublicKeyRetrieval=true";
+
+//    public static Connection conn = null;
+//    private static String DBUNAME = "root";
+//    private static String DBUPWD = "908520";
+//    //输入自己的mysql数据库的密码
+//    private static String DRIVER = "com.mysql.jdbc.Driver";
+//    private static String URL = "jdbc:mysql://127.0.0.1:3306/floatingisland?"
+//            + "serverTimezone=UTC"
+//            + "&useUnicode=true&characterEncoding=utf-8"
+//            + "&zeroDateTimeBehavior=convertToNull"
+//            + "&useSSL=false"
+//            + "&allowPublicKeyRetrieval=true";
 
     public static Connection getConn() {
 

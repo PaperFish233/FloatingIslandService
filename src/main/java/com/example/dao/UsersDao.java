@@ -43,6 +43,6 @@ public interface UsersDao {
 
     public int deleteData(int id);
 
-    public int updateData(int id,String uaccount,String upassword,String unickname,String usignature,String ubackgroundurl,String uavatarurl,String upermissions,String ustate);
+    public int updateData(int id,String uaccount,String upassword,String unickname,String usignature,String upermissions,String ustate);
 
 }

@@ -229,11 +229,9 @@ public class UsersServlet extends HttpServlet {
                 String upassword16 = req.getParameter("upassword1");
                 String unickname16 = req.getParameter("unickname1");
                 String usignature16 = req.getParameter("usignature1");
-                String ubackgroundurl16 = req.getParameter("ubackgroundurl1");
-                String uavatarurl16 = req.getParameter("uavatarurl1");
                 String upermissions16 = req.getParameter("upermissions1");
                 String ustate16 = req.getParameter("ustate1");
-                int i16 =usersDao.updateData(updateid,uaccount16,upassword16,unickname16,usignature16,ubackgroundurl16,uavatarurl16,upermissions16,ustate16);
+                int i16 =usersDao.updateData(updateid,uaccount16,upassword16,unickname16,usignature16,upermissions16,ustate16);
                 tMessage.setCode(200);
                 if(i16==1){
                     tMessage.setMessage("更新成功");

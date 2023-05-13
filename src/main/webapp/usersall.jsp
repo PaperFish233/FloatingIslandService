@@ -131,16 +131,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="uavatarurl1">用户头像：</label>
-                        <input type="text" class="form-control" id="uavatarurl1" name="uavatarurl1" placeholder="请输入用户头像" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ubackgroundurl1">主页背景：</label>
-                        <input type="text" class="form-control" id="ubackgroundurl1" name="ubackgroundurl1" placeholder="请输入主页背景" required>
-                    </div>
-
-                    <div class="form-group">
                         <label for="unickname1">用户昵称：</label>
                         <input type="text" class="form-control" id="unickname1" name="unickname1" maxlength="100" placeholder="请输入用户昵称" required>
                     </div>
@@ -361,8 +351,6 @@
             //获取该行数据
             var rowData = $('#dataTable').DataTable().row(tr).data();
             $('#updateid').val(rowData.uid);
-            $('#uavatarurl1').val(rowData.uavatarurl);
-            $('#ubackgroundurl1').val(rowData.ubackgroundurl);
             $('#unickname1').val(rowData.unickname);
             $('#usignature1').val(rowData.usignature);
             $('#uaccount1').val(rowData.uaccount);

@@ -20,7 +20,7 @@ public interface PostsDao {
 
     public List<Posts> getUserPostsData(int pid);
 
-    public int updateData(int pid, String uaccount, String pconnect, String pimageurl);
+    public int updateData(int pid, String uaccount, String pconnect, String pimageurl, int tid);
 
     public int deleteData(int pid, String uaccount);
 
