@@ -327,7 +327,7 @@
             $('#updateid').val(rowData.tid);
             $('#tname1').val(rowData.tname);
             $('#timageurl1').val(rowData.timageurl);
-            $('#tsignature1').val(useraccount); // 设置用户账号
+            $('#tsignature1').val(rowData.tsignature);
             $('#updateModal').modal('show'); // 弹出提示框
         });
 
